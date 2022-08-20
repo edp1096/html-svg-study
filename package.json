@@ -1,0 +1,23 @@
+{
+  "name": "hello-esbuild",
+  "version": "0.0.0",
+  "license": "ISC",
+  "type": "module",
+  "scripts": {
+    "scss": "call dart-sass/sass.bat src/scss/main.scss:css/style.css",
+    "mjs": "node esbuild-scripts/esbuild.mjs.js && node esbuild-scripts/esbuild.html.js mjs",
+    "js": "node esbuild-scripts/esbuild.js.js && node esbuild-scripts/esbuild.html.js js",
+    "css": "node esbuild-scripts/esbuild.css.js",
+    "all": "yarn scss && yarn js && yarn mjs && yarn css",
+    "watch": "node esbuild-scripts/esbuild.watch.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.15.5",
+    "tslint": "^6.1.3"
+  },
+  "dependencies": {
+    "html-minifier": "^4.0.0",
+    "jsdom": "^20.0.0",
+    "moment": "^2.29.4"
+  }
+}

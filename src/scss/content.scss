@@ -1,0 +1,12 @@
+@import "consts/color.scss";
+@import "consts/size.scss";
+
+h1 {
+    // color: $textcolor;
+    color: red;
+    font-size: $fontsize;
+}
+
+a {
+    color: $atextcolor;
+}

@@ -1,0 +1,8 @@
+@import "consts/color.scss";
+@import "consts/size.scss";
+
+body {
+    background-color: $bgcolor;
+    color: $textcolor;
+    font-size: $fontsize;
+}
