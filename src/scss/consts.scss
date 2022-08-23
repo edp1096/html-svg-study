@@ -1,3 +1,6 @@
+/* CONSTANTS
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
 :root {
     --page-header-bgColor: #242e42;
     --page-header-bgColor-hover: #1d2636;
@@ -17,4 +20,15 @@
     --switch-sunColor: gold;
     --switch-moonColor: #f4f4f4;
     --switch-bgDarkModeColor: #1f1f27;
+}
+
+/* LIGHT MODE STYLES
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.light-mode {
+    --page-header-bgColor: #f1efec;
+    --page-header-bgColor-hover: #b9e4e0;
+    --page-header-txtColor: #2c303a;
+    --page-header-headingColor: #979595;
+    --page-content-bgColor: #fff;
+    --box-shadow: 0 0 10px -2px rgba(0, 0, 0, 0.25);
 }

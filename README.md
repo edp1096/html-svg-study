@@ -1,8 +1,8 @@
 # 템플릿 따라하기
 
 ## 페이지
-* https://edp1096.github.io/html-svg-study
-* https://edp1096.github.io/html-svg-study/svglist
+* https://edp1096.github.io/html-svg-study/dist
+* https://edp1096.github.io/html-svg-study/dist/svg-list.html
 
 ## 템플릿
 * https://webdesign.tutsplus.com/tutorials/building-an-admin-dashboard-layout-with-css-and-a-touch-of-javascript--cms-33964

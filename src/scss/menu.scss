@@ -1,0 +1,49 @@
+@import "consts/color.scss";
+@import "consts/size.scss";
+
+/* MENU CLASSES
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.mob-menu-opened {
+    .toggle-mob-menu svg {
+        transform: rotate(180deg);
+    }
+
+    .page-header .admin-menu {
+        transform: scale(1);
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+/* Media Query
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+@media screen and (min-width: 767px) {
+    .collapsed {
+        .page-header {
+            width: 40px;
+
+            .admin-menu li>* {
+                padding: 10px;
+            }
+
+            .logo,
+            .admin-menu span,
+            .admin-menu .menu-heading {
+                display: none;
+            }
+
+            .admin-menu svg {
+                margin-right: 0;
+            }
+
+            .collapse-btn svg {
+                transform: rotate(180deg);
+            }
+        }
+
+        .page-content {
+            left: 40px;
+            width: calc(100% - 40px);
+        }
+    }
+}

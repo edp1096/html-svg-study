@@ -4,38 +4,34 @@ import { createServer, request } from "http"
 import { spawn } from "child_process"
 import jsdom from "jsdom"
 
-function updateHTML(arg) {
-    const html = fs.readFileSync("src/html/index.html", "utf8")
+import chokidar from "chokidar"
+import path from "path"
+
+function updateHTML(fpath) {
+    const fname = path.basename(fpath)
+    const html = fs.readFileSync(fpath, "utf8")
     const dom = new jsdom.JSDOM(html)
 
-    const script = dom.window.document.createElement("script")
+    // const script = dom.window.document.createElement("script")
+    // script.innerText = ` (() => new EventSource("/esbuild").onmessage = () => location.reload())();`
+    // dom.window.document.head.appendChild(script)
+    const script = '<script> (() => new EventSource("/esbuild").onmessage = () => location.reload())();</script>'
+    dom.window.document.head.innerHTML += script
 
-    switch (arg) {
-        case "js":
-            script.src = "main.js"
-            break
-        case "mjs":
-            script.type = "module"
-            script.innerHTML = "\n" + `import "./main.mjs"` + "\n"
-            break
-    }
+    fs.writeFileSync(`${serveDIR}/${fname}`, dom.serialize())
+}
 
-    dom.window.document.head.appendChild(script)
-    fs.writeFileSync(`${serveDIR}/index.html`, dom.serialize())
+function updateFile(fpath) {
+    const fname = path.basename(fpath)
+    fs.copyFileSync(fpath, `${serveDIR}/${fname}`)
 }
 
 // const op = { darwin: ['open'], linux: ['xdg-open'], win32: ['cmd', '/c', 'start'] }
 // const ptf = process.platform
 
-const arg = process.argv[2]
-if (arg != "js" && arg != "mjs") {
-    console.log("Usage: node esbuild.watch.js [js|mjs]")
-    fs.rmSync("serve", { recursive: true })
-    process.exit()
-}
-
 const serveDIR = "serve"
 const clients = []
+const addr = "127.0.0.1"
 const port = 8000
 
 if (!fs.existsSync(serveDIR)) { fs.mkdirSync(serveDIR) }
@@ -55,20 +51,10 @@ const watchJS = {
     }
 }
 
-switch (arg) {
-    case "js":
-        watchJS.entryPoints = ["src/ts/main.ts"]
-        watchJS.outfile = `${serveDIR}/main.js`
-        watchJS.target = "es6"
-        watchJS.format = "esm"
-        break
-    case "mjs":
-        watchJS.entryPoints = ["src/ts/main.ts"]
-        watchJS.outfile = `${serveDIR}/main.mjs`
-        watchJS.target = "esnext"
-        watchJS.format = "esm"
-        break
-}
+watchJS.entryPoints = ["src/ts/main.ts"]
+watchJS.outfile = `${serveDIR}/main.js`
+watchJS.target = "es6"
+watchJS.format = "esm"
 
 build(watchJS).catch(() => process.exit(1))
 
@@ -89,13 +75,52 @@ const watchCSS = {
 
 setTimeout(() => { if (fs.existsSync("css/style.css")) { build(watchCSS) } }, 250)
 
-updateHTML(arg)
-fs.watchFile("src/html/index.html", { interval: 250 }, (curr, prev) => {
-    if (curr.mtime > prev.mtime) {
-        updateHTML(arg)
-        clients.forEach((res) => res.write('data: update\n\n'))
+fs.readdirSync("src/html").forEach((fname) => {
+    if (fs.lstatSync("src/html/" + fname).isDirectory()) {
+        const dname = fname
+        fs.readdirSync("src/html/" + dname).forEach((fname) => {
+            if (fname.endsWith(".html")) {
+                updateHTML(`src/html/${dname}/${fname}`)
+            } else {
+                updateFile(`src/html/${dname}/${fname}`)
+            }
+        })
+    } else {
+        if (fname.endsWith(".html")) {
+            updateHTML(`src/html/${fname}`)
+        } else {
+            updateFile(`src/html/${fname}`)
+        }
     }
 })
+
+const watchFiles = chokidar.watch("./src/html", { ignored: /^\./, persistent: true })
+watchFiles.on("change", (fpath) => {
+    console.log("Updated ", fpath)
+    if (fpath.endsWith(".html")) {
+        updateHTML(fpath)
+    } else {
+        updateFile(fpath)
+    }
+
+    const fname = path.basename(fpath)
+    clients.forEach((res) => res.write(`data: ${fname} updated\n\n`))
+})
+
+// updateHTML()
+// updateSVG()
+// fs.watchFile("src/html/index.html", { interval: 250 }, (curr, prev) => {
+//     if (curr.mtime > prev.mtime) {
+//         updateHTML()
+//         clients.forEach((res) => res.write('data: html updated\n\n'))
+//     }
+// })
+// fs.watchFile("src/svg/icons.svg", { interval: 250 }, (curr, prev) => {
+//     if (curr.mtime > prev.mtime) {
+//         updateSVG()
+//         clients.forEach((res) => res.write('data: svg updated\n\n'))
+//     }
+// })
 
 
 // https://github.com/evanw/esbuild/issues/802#issuecomment-819578182
@@ -111,12 +136,12 @@ const server = serve({ servedir: `${serveDIR}/` }, {}).then(() => {
                 })
             )
         }
-        const path = ~url.split('/').pop().indexOf('.') ? url : `/index.html` //for PWA with router
+        const fpath = ~url.split('/').pop().indexOf('.') ? url : `/index.html` //for PWA with router
         req.pipe(
             request({
-                hostname: '0.0.0.0',
-                port: 8000,
-                path,
+                hostname: addr,
+                port: port,
+                path: fpath,
                 method,
                 headers
             }, (prxRes) => {
@@ -129,7 +154,7 @@ const server = serve({ servedir: `${serveDIR}/` }, {}).then(() => {
 })
 
 server.then(() => {
-    console.log(`Running server ${arg} on http://localhost:${port}`)
+    console.log(`Running server on http://${addr}:${port}`)
 
     process.on('SIGINT', () => {
         fs.rmSync("serve", { recursive: true })

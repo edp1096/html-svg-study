@@ -1,0 +1,110 @@
+@import "consts/color.scss";
+@import "consts/size.scss";
+
+/* SWITCH STYLES
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.switch {}
+
+label {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-column-gap: 10px;
+    align-items: center;
+    justify-content: flex-start;
+
+    span:first-child {
+        position: relative;
+        width: 50px;
+        height: 26px;
+        border-radius: 15px;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.4);
+        background: var(--switch-bgLightModeColor);
+        transition: all 0.3s;
+    }
+
+    span:first-child::before,
+    span:first-child::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+    }
+
+    span:first-child::before {
+        top: 1px;
+        left: 1px;
+        width: 24px;
+        height: 24px;
+        background: var(--white);
+        z-index: 1;
+        transition: transform 0.3s;
+    }
+
+    span:first-child::after {
+        top: 50%;
+        right: 8px;
+        width: 10px;
+        height: 10px;
+        transform: translateY(-50%);
+        background: var(--switch-sunColor);
+        box-shadow: 0 0 4px 2px #ffdb1a;
+    }
+
+    [type="checkbox"]:checked+label span:first-child {
+        background: var(--switch-bgDarkModeColor);
+    }
+
+    [type="checkbox"]:focus+label span:first-child {
+        box-shadow: 0 3px 5px rgba(255, 255, 255, 0.25);
+    }
+
+    [type="checkbox"]:checked+label span:first-child::before {
+        transform: translateX(24px);
+    }
+
+    [type="checkbox"]:checked+label span:first-child::after {
+        left: 12px;
+        width: 15px;
+        height: 15px;
+        background: transparent;
+        box-shadow: -2px -5px 0 var(--switch-moonColor);
+        transform: translateY(-50%) rotate(-72deg);
+    }
+}
+
+
+/* LIGHT MODE STYLES
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.light-mode {
+    .page-header {
+        .admin-menu {
+    
+            a:hover,
+            a:focus,
+            button:hover,
+            button:focus {
+                color: var(--black);
+            }
+        }
+    
+        .logo svg,
+        .admin-menu a:hover svg,
+        .admin-menu a:focus svg,
+        .admin-menu button:hover svg,
+        .admin-menu button:focus svg {
+            fill: var(--black);
+        }
+    }
+
+    .switch [type="checkbox"]:focus+label span:first-child {
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+    }
+}
+
+/* Media Query
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+@media screen and (max-width: 767px) {
+    .light-mode .search-and-user .admin-profile svg {
+        fill: var(--black);
+    }
+}
