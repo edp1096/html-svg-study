@@ -1,5 +1,5 @@
 import { hello } from "./util"
-hello("TypeScript")
+hello("TypeScript!")
 
 function initEventLiseners() : void {
     const html = document.documentElement

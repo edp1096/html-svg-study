@@ -8,22 +8,35 @@ import chokidar from "chokidar"
 import path from "path"
 
 function updateHTML(fpath) {
-    const fname = path.basename(fpath)
+    fpath = fpath.replace(/\\/g, "/")
+
+    const fname = path.basename(fpath.replace("src/html/", ""))
+    const dname = fpath.replace("src/html/", "").replace(fname, "").replace(/\/+$/, "")
+
     const html = fs.readFileSync(fpath, "utf8")
     const dom = new jsdom.JSDOM(html)
 
-    // const script = dom.window.document.createElement("script")
-    // script.innerText = ` (() => new EventSource("/esbuild").onmessage = () => location.reload())();`
-    // dom.window.document.head.appendChild(script)
     const script = '<script> (() => new EventSource("/esbuild").onmessage = () => location.reload())();</script>'
     dom.window.document.head.innerHTML += script
 
-    fs.writeFileSync(`${serveDIR}/${fname}`, dom.serialize())
+    let servePath = serveDIR
+    if (dname != "") { servePath += `/${dname}` }
+
+    if (!fs.existsSync(servePath)) { fs.mkdirSync(servePath) }
+    fs.writeFileSync(`${servePath}/${fname}`, dom.serialize())
 }
 
 function updateFile(fpath) {
-    const fname = path.basename(fpath)
-    fs.copyFileSync(fpath, `${serveDIR}/${fname}`)
+    fpath = fpath.replace(/\\/g, "/")
+
+    const fname = path.basename(fpath.replace(/\\/g, "/").replace("src/html/", ""))
+    const dname = fpath.replace("src/html/", "").replace(fname, "").replace(/\/+$/, "")
+
+    let servePath = serveDIR
+    if (dname != "") { servePath += `/${dname}` }
+
+    if (!fs.existsSync(servePath)) { fs.mkdirSync(servePath) }
+    fs.copyFileSync(fpath, `${servePath}/${fname}`)
 }
 
 // const op = { darwin: ['open'], linux: ['xdg-open'], win32: ['cmd', '/c', 'start'] }
@@ -106,21 +119,6 @@ watchFiles.on("change", (fpath) => {
     const fname = path.basename(fpath)
     clients.forEach((res) => res.write(`data: ${fname} updated\n\n`))
 })
-
-// updateHTML()
-// updateSVG()
-// fs.watchFile("src/html/index.html", { interval: 250 }, (curr, prev) => {
-//     if (curr.mtime > prev.mtime) {
-//         updateHTML()
-//         clients.forEach((res) => res.write('data: html updated\n\n'))
-//     }
-// })
-// fs.watchFile("src/svg/icons.svg", { interval: 250 }, (curr, prev) => {
-//     if (curr.mtime > prev.mtime) {
-//         updateSVG()
-//         clients.forEach((res) => res.write('data: svg updated\n\n'))
-//     }
-// })
 
 
 // https://github.com/evanw/esbuild/issues/802#issuecomment-819578182

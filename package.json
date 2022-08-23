@@ -8,7 +8,7 @@
     "css": "node esbuild-scripts/esbuild.css.js",
     "js": "node esbuild-scripts/esbuild.js.js",
     "html": "node esbuild-scripts/esbuild.html.js",
-    "all": "yarn scss && yarn css && yarn js && yarn html",
+    "dist": "yarn scss && yarn css && yarn js && yarn html",
     "watch": "node esbuild-scripts/esbuild.watch.js"
   },
   "devDependencies": {

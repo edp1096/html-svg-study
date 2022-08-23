@@ -16,7 +16,7 @@
           <svg>
             <use>
               <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-              <xsl:attribute name="href">../icons.svg#<xsl:value-of select="@id"/></xsl:attribute>
+              <xsl:attribute name="href">icons.svg#<xsl:value-of select="@id"/></xsl:attribute>
             </use>
           </svg>
         </td>

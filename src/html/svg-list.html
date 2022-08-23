@@ -21,7 +21,7 @@
     async function displayResult() {
         const doc = new DOMParser()
 
-        const xmltxt = await fetch("../icons.svg")
+        const xmltxt = await fetch("icons.svg")
         let xml = doc.parseFromString(await xmltxt.text(), "text/xml")
         if (xml.documentElement.nodeName == "parsererror") {
             cosnole.log("xml error - " + xml.documentElement.childNodes[0].nodeValue)

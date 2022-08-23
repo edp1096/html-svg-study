@@ -20,15 +20,11 @@ X:\> yarn
 ```
 * Build or watch
 ```cmd
-X:\> yarn all
+X:\> yarn dist
 ```
 or
 ```cmd
-X:\> yarn watch js
-```
-or
-```cmd
-X:\> yarn watch mjs
+X:\> yarn watch
 ```
 * Clean
 ```cmd
