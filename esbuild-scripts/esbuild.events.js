@@ -1,8 +1,8 @@
 import { build } from 'esbuild'
 
 build({
-    entryPoints: ["src/ts/main.ts"],
-    outfile: "dist/main.js",
+    entryPoints: ["src/ts/events.ts"],
+    outfile: "dist/events.js",
     bundle: true,
     minify: true,
     sourcemap: true,

@@ -6,9 +6,9 @@
   "scripts": {
     "scss": "call dart-sass/sass.bat src/scss/main.scss:css/style.css",
     "css": "node esbuild-scripts/esbuild.css.js",
-    "js": "node esbuild-scripts/esbuild.js.js",
+    "events": "node esbuild-scripts/esbuild.events.js",
     "html": "node esbuild-scripts/esbuild.html.js",
-    "dist": "yarn scss && yarn css && yarn js && yarn html",
+    "dist": "yarn scss && yarn css && yarn events && yarn html",
     "watch": "node esbuild-scripts/esbuild.watch.js"
   },
   "devDependencies": {

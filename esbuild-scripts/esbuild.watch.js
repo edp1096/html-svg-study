@@ -7,6 +7,11 @@ import jsdom from "jsdom"
 import chokidar from "chokidar"
 import path from "path"
 
+const serveDIR = "serve"
+const clients = []
+const addr = "127.0.0.1"
+const port = 8000
+
 function updateHTML(fpath) {
     fpath = fpath.replace(/\\/g, "/")
 
@@ -42,14 +47,13 @@ function updateFile(fpath) {
 // const op = { darwin: ['open'], linux: ['xdg-open'], win32: ['cmd', '/c', 'start'] }
 // const ptf = process.platform
 
-const serveDIR = "serve"
-const clients = []
-const addr = "127.0.0.1"
-const port = 8000
-
 if (!fs.existsSync(serveDIR)) { fs.mkdirSync(serveDIR) }
 
-const watchJS = {
+const watchEvents = {
+    entryPoints: ["src/ts/events.ts"],
+    outfile: `${serveDIR}/events.js`,
+    target: "es6",
+    format: "esm",
     bundle: true,
     banner: { js: ' (() => new EventSource("/esbuild").onmessage = () => location.reload())();' },
     minify: true,
@@ -64,12 +68,7 @@ const watchJS = {
     }
 }
 
-watchJS.entryPoints = ["src/ts/main.ts"]
-watchJS.outfile = `${serveDIR}/main.js`
-watchJS.target = "es6"
-watchJS.format = "esm"
-
-build(watchJS).catch(() => process.exit(1))
+build(watchEvents).catch(() => process.exit(1))
 
 spawn("dart-sass\\sass.bat", ["--watch", "src/scss/main.scss", "css/style.css"])
 const watchCSS = {
