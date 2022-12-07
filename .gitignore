@@ -3,6 +3,8 @@ dart-sass/
 dart-sass.zip
 css/
 serve/
+dist/
+!dist/.gitkeep
 
 # Logs
 logs
